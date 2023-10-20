@@ -27,10 +27,27 @@ app.get('/foo', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+    socket.identity = 'anonymous';
+
+    const sendMessage = (msg) => {
+        io.emit('chat message', {identity: socket.identity, message: msg});
+    }
+
     socket.on('chat message', (msg) => {
-      io.emit('chat message', msg);
+      sendMessage(msg);
     });
-  });
+
+    socket.on('identity', (identity) => {
+        console.log('got identity', identity);
+        socket.identity = identity;
+        sendMessage('joined the chat');
+    })
+
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+      sendMessage('has left the chat');
+    });
+});
 
 
 server.listen(3000, () => {

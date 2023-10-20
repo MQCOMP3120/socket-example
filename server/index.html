@@ -26,7 +26,6 @@
     <script>
         const socket = io();
 
-
         const form = document.getElementById('form');
         const input = document.getElementById('input');
         const messages = document.getElementById('messages');
@@ -42,7 +41,7 @@
 
         socket.on('chat message', (msg) => {
             const item = document.createElement('li');
-            item.textContent = msg;
+            item.textContent = msg.identity + ':' + msg.message;
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
         });
