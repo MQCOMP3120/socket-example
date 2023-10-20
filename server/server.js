@@ -9,7 +9,6 @@ import cors from 'cors';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
 const app = express();
 app.use(cors());
 
@@ -22,14 +21,11 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'index.html'));
 });
 
-app.get('/foo', (req, res) => {
-    res.json({msg: 'foo'});
-});
-
 io.on('connection', (socket) => {
     socket.identity = 'anonymous';
 
     const sendMessage = (msg) => {
+        console.log('emit', socket.identity, msg);
         io.emit('chat message', {identity: socket.identity, message: msg});
     }
 

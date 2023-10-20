@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import './App.css'
 import {socket} from './socket';
 
@@ -8,15 +8,17 @@ function App() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    // connect anonymously on startup
-    socket.connect();
-  }, []);
+  const addMessage = useCallback((msg) => {
+    setMessages((messages) => [...messages, msg]);
+  },  []);
 
-  socket.on('chat message', (msg) => {
-    console.log('received message', msg);
-    setMessages([...messages, msg]);
-  });
+  useEffect(() => {
+    socket.on('chat message', addMessage);
+
+    return () => {
+      socket.off('chat message', addMessage);
+    }
+  }, [addMessage]);
 
   const updateMessage = (e) => {
     setMessage(e.target.value);
@@ -38,6 +40,7 @@ function App() {
   const identityHandler = (e) => {
     e.preventDefault();
     if (identity) {
+      socket.disconnect();
       socket.connect();
       console.log('sending identity', identity);
       socket.emit('identity', identity);
@@ -54,7 +57,7 @@ function App() {
 
       <ul id="messages">
         {messages.map((message, index) => (
-          <li key={index}>{message.identity}: {message.message}</li>
+          <li key={index}><strong>{message.identity}</strong>: {message.message}</li>
         ))}
       </ul>
 
