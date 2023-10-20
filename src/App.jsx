@@ -4,17 +4,27 @@ import {socket} from './socket';
 
 function App() {
 
+  console.log('rendering App');
   const [identity, setIdentity] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
+  // addMessage will be used as a callback in useEffect
+  // so we wrap it in useCallback so that it doesn't change
+  // with every render
   const addMessage = useCallback((msg) => {
+    console.log('adding message', msg);
     setMessages((messages) => [...messages, msg]);
   },  []);
 
-  useEffect(() => {
+  // create the socket handlers inside useEffect so that they
+  // are only created once, on startup
+  useEffect(() => {  
+    socket.connect();  
     socket.on('chat message', addMessage);
 
+    // return a cleanup function from useEffect to remove
+    // the socket handlers
     return () => {
       socket.off('chat message', addMessage);
     }
@@ -40,8 +50,6 @@ function App() {
   const identityHandler = (e) => {
     e.preventDefault();
     if (identity) {
-      socket.disconnect();
-      socket.connect();
       console.log('sending identity', identity);
       socket.emit('identity', identity);
     }
