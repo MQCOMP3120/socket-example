@@ -1,8 +1,30 @@
-# React + Vite
+# COMP3120 Websocket Example
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a small example application that follows the
+[Socket.io Tutorial](https://socket.io/docs/v4/tutorial/introduction)
+and extends it to a React front-end and to manage user identities.
 
-Currently, two official plugins are available:
+## Server
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The server is implemented in <server/server.js>. Run using the command:
+
+```bash
+npm run server
+```
+
+The server will listen on <http://localhost:3000/>.
+
+The server delivers a single HTML page that acts as a client for the chat
+application following the example code in the tutorial with a few changes.
+
+## React Front End
+
+The React front end implements an enhancement to allow the client to claim
+an identity and use that for subsequent chat messages.  Run the development
+server with:
+
+```bash
+npm run dev
+```
+
+To test the application, open either front end in multiple browser windows or tabs and you should be able to exchange messages between them.
